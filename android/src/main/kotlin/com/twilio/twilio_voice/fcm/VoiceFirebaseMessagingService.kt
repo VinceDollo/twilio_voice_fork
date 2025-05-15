@@ -144,6 +144,7 @@ class VoiceFirebaseMessagingService : FirebaseMessagingService(), MessageListene
 
         // send broadcast to TVConnectionService, we notify the TelecomManager about incoming call
         Intent(applicationContext, TVConnectionService::class.java).apply {
+            Log.d(TAG, "send broadcast to TVConnectionService, we notify the TelecomManager about incoming call")
             action = TVConnectionService.ACTION_INCOMING_CALL
             putExtra(TVConnectionService.EXTRA_INCOMING_CALL_INVITE, callInvite)
             applicationContext.startService(this)
@@ -151,6 +152,7 @@ class VoiceFirebaseMessagingService : FirebaseMessagingService(), MessageListene
 
         // send broadcast to TVBroadcastReceiver, we notify Flutter about incoming call
         Intent(applicationContext, TVBroadcastReceiver::class.java).apply {
+            Log.d(TAG, "send broadcast to TVBroadcastReceiver, we notify Flutter about incoming call")
             action = TVBroadcastReceiver.ACTION_INCOMING_CALL
             putExtra(TVBroadcastReceiver.EXTRA_CALL_INVITE, callInvite)
             putExtra(TVBroadcastReceiver.EXTRA_CALL_HANDLE, callInvite.callSid)
@@ -163,6 +165,7 @@ class VoiceFirebaseMessagingService : FirebaseMessagingService(), MessageListene
         Intent(applicationContext, TVConnectionService::class.java).apply {
             action = TVConnectionService.ACTION_CANCEL_CALL_INVITE
             putExtra(TVConnectionService.EXTRA_CANCEL_CALL_INVITE, cancelledCallInvite)
+            Log.d(TAG, "check android version")
 //            applicationContext.startService(this)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 applicationContext.startForegroundService(this) // Ensure it's started as a foreground service
