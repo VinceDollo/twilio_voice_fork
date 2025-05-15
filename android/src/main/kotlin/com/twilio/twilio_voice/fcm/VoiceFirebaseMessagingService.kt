@@ -64,7 +64,17 @@ class VoiceFirebaseMessagingService : FirebaseMessagingService(), MessageListene
         // If application is running in the foreground use local broadcast to handle message.
         // Otherwise use the background isolate to handle message.
         if (remoteMessage.data.isNotEmpty()) {
-            val valid = Voice.handleMessage(this, remoteMessage.data, this)
+            val valid = Voice.handleMessage(this, remoteMessage.data, object: MessageListener {
+                override fun onCallInvite(twilioCallInvite: CallInvite) {
+                    Log.d(TAG, "onCallInvite")
+                }
+                override fun onCancelledCallInvite(
+                    cancelledCallInvite: CancelledCallInvite,
+                    callException: CallException?,
+                ) {
+                    Log.d(TAG, "onCancelledCallInvite")
+                }
+            })
             if (!valid) {
                 Log.d(TAG, "onMessageReceived: The message was not a valid Twilio Voice SDK payload, continuing...")
             }
