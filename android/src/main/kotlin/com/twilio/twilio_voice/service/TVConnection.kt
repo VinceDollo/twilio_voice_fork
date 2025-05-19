@@ -45,8 +45,7 @@ class TVCallInviteConnection(
     }
 
     override fun onAnswer() {
-        Log.d(TAG, "onAnswer: onAnswer")
-//        super.onAnswer()
+        Log.d(TAG, "onAnswer TVCallInviteConnection: onAnswer")
         callInvite.reject(context)
         // if the call was answered, then immediately rejected/ended, we need to disconnect the call also
         twilioCall?.let {
