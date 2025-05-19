@@ -62,7 +62,7 @@ class TVCallInviteConnection(
 
     fun acceptInvite() {
         Log.d(TAG, "acceptInvite: acceptInvite")
-        onAnswer()
+        onReject()
     }
 
     fun rejectInvite() {
@@ -338,7 +338,9 @@ open class TVCallConnection(
     }
 
     override fun onAnswer(videoState: Int) {
-        super.onAnswer(videoState)
+//        super.onAnswer(videoState)
+        twilioCall?.disconnect()
+        onAction?.onChange(TVNativeCallActions.ACTION_REJECTED, null)
         Log.d(TAG, "onAnswer: onAnswer")
     }
 
