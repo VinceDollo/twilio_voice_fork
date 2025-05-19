@@ -285,14 +285,16 @@ class TVConnectionService : ConnectionService() {
                         return@let
                     }
 
-                    val myBundle: Bundle = Bundle().apply {
-                        putParcelable(EXTRA_INCOMING_CALL_INVITE, callInvite)
+                    val inviteBundle = Bundle().apply {
+                        putString("callSid", callInvite.callSid)
+                        putString("from", callInvite.from)
+                        putString("to", callInvite.to)
+                        putSerializable("customParameters", HashMap(callInvite.customParameters))
                     }
-                    myBundle.classLoader = CallInvite::class.java.classLoader
 
                     // Add extras for [addNewIncomingCall] method
                     val extras = Bundle().apply {
-                        putBundle(TelecomManager.EXTRA_INCOMING_CALL_EXTRAS, myBundle)
+                        putBundle(TelecomManager.EXTRA_INCOMING_CALL_EXTRAS, inviteBundle)
                         putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, phoneAccountHandle)
 
                         if (callInvite.customParameters.containsKey("_TWI_SUBJECT")) {
@@ -478,22 +480,17 @@ class TVConnectionService : ConnectionService() {
         Log.d(TAG, "onCreateIncomingConnection")
 
         val extras = request?.extras
-        val myBundle: Bundle = extras?.getBundle(TelecomManager.EXTRA_INCOMING_CALL_EXTRAS) ?: run {
-            Log.e(TAG, "onCreateIncomingConnection: request is missing Bundle EXTRA_INCOMING_CALL_EXTRAS")
-            throw Exception("onCreateIncomingConnection: request is missing Bundle EXTRA_INCOMING_CALL_EXTRAS");
-        }
+        val rawBundle = request?.extras?.getBundle(TelecomManager.EXTRA_INCOMING_CALL_EXTRAS)
+            ?: throw Exception("Missing EXTRA_INCOMING_CALL_EXTRAS")
 
-        myBundle.classLoader = CallInvite::class.java.classLoader
-        val ci: CallInvite = myBundle.getParcelableSafe(EXTRA_INCOMING_CALL_INVITE) ?: run {
-            Log.e(TAG, "onCreateIncomingConnection: request is missing CallInvite EXTRA_INCOMING_CALL_INVITE")
-            throw Exception("onCreateIncomingConnection: request is missing CallInvite EXTRA_INCOMING_CALL_INVITE");
-        }
+        val ciData = bundleToCallInviteData(rawBundle)
+
 
         // Create storage instance for call parameters
         val storage: Storage = StorageImpl(applicationContext)
 
         // Resolve call parameters
-        val callParams: TVParameters = TVCallInviteParametersImpl(storage, ci);
+        val callParams: TVParameters = TVCallInviteParametersImpl(storage, ciData);
 
         // Create connection
         val connection = TVCallInviteConnection(applicationContext, ci, callParams)
@@ -505,7 +502,7 @@ class TVConnectionService : ConnectionService() {
         connection.extras = requestBundle
 
         // Setup connection event listeners and UI parameters
-        attachCallEventListeners(connection, ci.callSid)
+        attachCallEventListeners(connection, ciData.callSid)
         applyParameters(connection, callParams)
         connection.setRinging()
 
@@ -749,4 +746,26 @@ class TVConnectionService : ConnectionService() {
             Log.w(TAG, "[VoiceConnectionService] can't stop foreground service :$e")
         }
     }
+
+    private fun bundleToCallInviteData(bundle: Bundle): CallInviteData {
+        return CallInviteData(
+            callSid = bundle.getString("callSid") ?: "",
+            from = bundle.getString("from") ?: "",
+            to = bundle.getString("to") ?: "",
+            bridgeToken = bundle.getString("bridgeToken") ?: "",
+            messageSid = bundle.getString("messageSid") ?: "",
+            stirStatus = bundle.getString("stirStatus") ?: "",
+            customParameters = bundle.getSerializable("customParameters") as? HashMap<String, String> ?: hashMapOf()
+        )
+    }
+
+    data class CallInviteData(
+        val callSid: String,
+        val from: String,
+        val to: String,
+        val bridgeToken: String,
+        val messageSid: String,
+        val stirStatus: String,
+        val customParameters: Map<String, String>
+    )
 }

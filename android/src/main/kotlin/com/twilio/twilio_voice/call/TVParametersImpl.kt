@@ -4,24 +4,20 @@ import com.twilio.twilio_voice.call.TVParameters.Companion.PARAM_CALLER_ID
 import com.twilio.twilio_voice.call.TVParameters.Companion.PARAM_CALLER_NAME
 import com.twilio.twilio_voice.call.TVParameters.Companion.PARAM_RECIPIENT_ID
 import com.twilio.twilio_voice.call.TVParameters.Companion.PARAM_RECIPIENT_NAME
+import com.twilio.twilio_voice.service.TVConnectionService.CallInviteData
 import com.twilio.twilio_voice.storage.Storage
 import com.twilio.voice.Call
-import com.twilio.voice.CallInvite
 
-class TVCallInviteParametersImpl(storage: Storage, callInvite: CallInvite) : TVParametersImpl(storage, callInvite.callSid, callInvite.customParameters) {
+class TVCallInviteParametersImpl(storage: Storage, callInviteData: CallInviteData) : TVParametersImpl(storage, callInviteData.callSid, callInviteData.customParameters) {
 
-    private val mCallInvite: CallInvite
-
-    init {
-        mCallInvite = callInvite
-    }
+    private val mCallInvite: CallInviteData = callInviteData
 
     override val from: String
         get() {
             return customParameters[PARAM_CALLER_NAME]
                 ?: customParameters[PARAM_CALLER_ID]?.let { resolveHumanReadableName(it) }
                 ?: run {
-                    val mFrom = mCallInvite.from ?: ""
+                    val mFrom = mCallInvite.from
                     if (mFrom.isEmpty()) {
                         return mStorage.defaultCaller
                     }
@@ -55,7 +51,7 @@ class TVCallInviteParametersImpl(storage: Storage, callInvite: CallInvite) : TVP
 
     override val fromRaw: String
         get() {
-            return mCallInvite.from ?: ""
+            return mCallInvite.from
         }
 
     override val toRaw: String
