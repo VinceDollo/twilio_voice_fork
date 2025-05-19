@@ -477,17 +477,26 @@ class TVConnectionService : ConnectionService() {
         super.onCreateIncomingConnection(connectionManagerPhoneAccount, request)
         Log.d(TAG, "onCreateIncomingConnection")
 
+        Log.d(TAG, "BEFORE CRASH 1 ??")
+
         val extras = request?.extras
         val myBundle: Bundle = extras?.getBundle(TelecomManager.EXTRA_INCOMING_CALL_EXTRAS) ?: run {
             Log.e(TAG, "onCreateIncomingConnection: request is missing Bundle EXTRA_INCOMING_CALL_EXTRAS")
             throw Exception("onCreateIncomingConnection: request is missing Bundle EXTRA_INCOMING_CALL_EXTRAS");
         }
 
+        Log.d(TAG, "AFTER CRASH 1 ??")
+
+        Log.d(TAG, "BEFORE CRASH 2 ??")
+
         myBundle.classLoader = CallInvite::class.java.classLoader
         val ci: CallInvite = myBundle.getParcelableSafe(EXTRA_INCOMING_CALL_INVITE) ?: run {
             Log.e(TAG, "onCreateIncomingConnection: request is missing CallInvite EXTRA_INCOMING_CALL_INVITE")
             throw Exception("onCreateIncomingConnection: request is missing CallInvite EXTRA_INCOMING_CALL_INVITE");
         }
+
+
+        Log.d(TAG, "AFTER CRASH 2 ??")
 
         // Create storage instance for call parameters
         val storage: Storage = StorageImpl(applicationContext)
