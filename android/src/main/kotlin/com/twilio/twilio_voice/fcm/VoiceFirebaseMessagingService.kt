@@ -72,7 +72,7 @@ class VoiceFirebaseMessagingService : FirebaseMessagingService(), MessageListene
     }
 
     //region MessageListener
-    @RequiresPermission(allOf = [Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS])
+    @RequiresPermission(allOf = [Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS])
     @SuppressLint("MissingPermission")
     override fun onCallInvite(callInvite: CallInvite) {
         Log.d(

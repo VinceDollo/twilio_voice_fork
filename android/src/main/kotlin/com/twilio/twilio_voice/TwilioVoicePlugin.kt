@@ -560,7 +560,7 @@ class TwilioVoicePlugin : FlutterPlugin, MethodCallHandler, EventChannel.StreamH
 
             TVMethodChannels.ANSWER -> {
                 Log.d(TAG, "Answering call")
-                answer()
+//                answer()
                 result.success(true)
             }
 
