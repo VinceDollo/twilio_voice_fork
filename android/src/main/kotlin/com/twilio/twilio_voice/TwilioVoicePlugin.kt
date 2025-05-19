@@ -560,7 +560,7 @@ class TwilioVoicePlugin : FlutterPlugin, MethodCallHandler, EventChannel.StreamH
 
             TVMethodChannels.ANSWER -> {
                 Log.d(TAG, "Answering call")
-//                answer()
+                hangup()
                 result.success(true)
             }
 
@@ -951,18 +951,6 @@ class TwilioVoicePlugin : FlutterPlugin, MethodCallHandler, EventChannel.StreamH
         } ?: run {
             Log.e(TAG, "Context is null. Cannot sendDigits.")
             return false
-        }
-    }
-
-    private fun answer() {
-        // Send to active call via Intent
-        context?.let { ctx ->
-            Intent(ctx, TVConnectionService::class.java).apply {
-                action = TVConnectionService.ACTION_ANSWER
-                ctx.startService(this)
-            }
-        } ?: run {
-            Log.e(TAG, "Context is null. Cannot answer call.")
         }
     }
 
@@ -1710,32 +1698,32 @@ class TwilioVoicePlugin : FlutterPlugin, MethodCallHandler, EventChannel.StreamH
 
             TVNativeCallActions.ACTION_ANSWERED -> {
                 // TODO
-                val callHandle =
-                    intent.getStringExtra(TVBroadcastReceiver.EXTRA_CALL_HANDLE) ?: run {
-                        Log.e(
-                            TAG,
-                            "No 'EXTRA_CALL_INVITE' provided or invalid type, make sure to provide a [CallInvite]"
-                        )
-                        return
-                    }
-                val ci =
-                    intent.getParcelableExtraSafe<CallInvite>(TVBroadcastReceiver.EXTRA_CALL_INVITE)
-                        ?: run {
-                            Log.e(
-                                TAG,
-                                "No 'EXTRA_CALL_INVITE' provided or invalid type, make sure to provide a [CallInvite]"
-                            )
-                            return
-                        }
-                val from = ci.from ?: ""
-                val to = ci.to
-                val params = JSONObject().apply {
-                    ci.customParameters.forEach { (key, value) ->
-                        put(key, value)
-                    }
-                }.toString()
+//                val callHandle =
+//                    intent.getStringExtra(TVBroadcastReceiver.EXTRA_CALL_HANDLE) ?: run {
+//                        Log.e(
+//                            TAG,
+//                            "No 'EXTRA_CALL_INVITE' provided or invalid type, make sure to provide a [CallInvite]"
+//                        )
+//                        return
+//                    }
+//                val ci =
+//                    intent.getParcelableExtraSafe<CallInvite>(TVBroadcastReceiver.EXTRA_CALL_INVITE)
+//                        ?: run {
+//                            Log.e(
+//                                TAG,
+//                                "No 'EXTRA_CALL_INVITE' provided or invalid type, make sure to provide a [CallInvite]"
+//                            )
+//                            return
+//                        }
+//                val from = ci.from ?: ""
+//                val to = ci.to
+//                val params = JSONObject().apply {
+//                    ci.customParameters.forEach { (key, value) ->
+//                        put(key, value)
+//                    }
+//                }.toString()
 //                callSid = callHandle
-                logEvents("", arrayOf("Answer", from, to, CallDirection.INCOMING.label, params))
+//                logEvents("", arrayOf("Answer", from, to, CallDirection.INCOMING.label, params))
             }
 
             TVNativeCallActions.ACTION_DTMF -> {

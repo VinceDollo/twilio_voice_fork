@@ -305,20 +305,13 @@ class TVConnectionService : ConnectionService() {
                 }
 
                 ACTION_ANSWER -> {
-                    val callHandle = it.getStringExtra(EXTRA_CALL_HANDLE) ?: getIncomingCallHandle() ?: run {
+                    val callHandle = it.getStringExtra(EXTRA_CALL_HANDLE) ?: getActiveCallHandle() ?: run {
                         Log.e(TAG, "onStartCommand: ACTION_HANGUP is missing String EXTRA_CALL_HANDLE")
                         return@let
                     }
 
-                    val connection = getConnection(callHandle) ?: run {
+                    getConnection(callHandle)?.disconnect() ?: run {
                         Log.e(TAG, "onStartCommand: [ACTION_HANGUP] could not find connection for callHandle: $callHandle")
-                        return@let
-                    }
-
-                    if(connection is TVCallInviteConnection) {
-                        connection.acceptInvite()
-                    } else {
-                        Log.e(TAG, "onStartCommand: [ACTION_ANSWER] could not find connection for callHandle: $callHandle")
                     }
                 }
 
