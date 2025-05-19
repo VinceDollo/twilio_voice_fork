@@ -509,7 +509,6 @@ class TVConnectionService : ConnectionService() {
         applyParameters(connection, callParams)
         connection.setRinging()
 
-        startForegroundService()
         return connection
     }
 
@@ -594,8 +593,6 @@ class TVConnectionService : ConnectionService() {
 
         // Apply extras
         connection.extras = request.extras
-
-        startForegroundService()
 
         return connection
     }
@@ -720,23 +717,6 @@ class TVConnectionService : ConnectionService() {
 
     private fun cancelNotification() {
         val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(SERVICE_TYPE_MICROPHONE)
-    }
-
-    /// Source: https://github.com/react-native-webrtc/react-native-callkeep/blob/master/android/src/main/java/io/wazo/callkeep/VoiceConnectionService.java#L295
-    private fun startForegroundService() {
-        val notification = createNotification()
-        Log.d(TAG, "[VoiceConnectionService] Starting foreground service")
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // Optional for Android +11, required for Android +14
-                startForeground(SERVICE_TYPE_MICROPHONE, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE)
-            } else {
-                startForeground(SERVICE_TYPE_MICROPHONE, notification)
-            }
-        } catch (e: Exception) {
-            Log.w(TAG, "[VoiceConnectionService] Can't start foreground service : $e")
-        }
     }
 
     /// Source: https://github.com/react-native-webrtc/react-native-callkeep/blob/master/android/src/main/java/io/wazo/callkeep/VoiceConnectionService.java#L352C5-L377C6
