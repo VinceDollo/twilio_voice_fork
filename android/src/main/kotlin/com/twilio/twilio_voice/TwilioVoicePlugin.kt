@@ -1594,34 +1594,9 @@ class TwilioVoicePlugin : FlutterPlugin, MethodCallHandler, EventChannel.StreamH
     fun handleBroadcastIntent(intent: Intent) {
         when (intent.action) {
             TVBroadcastReceiver.ACTION_AUDIO_STATE -> {
-                val callAudioState: CallAudioState =
-                    intent.getParcelableExtraSafe(TVBroadcastReceiver.EXTRA_AUDIO_STATE) ?: run {
-                        Log.e(
-                            TAG,
-                            "handleBroadcastIntent: No 'EXTRA_AUDIO_STATE' provided or invalid type, make sure to provide a [CallAudioState]"
-                        )
-                        return
-                    }
-
-                isMuted =
-                    if (isMuted == callAudioState.isMuted) isMuted else callAudioState.isMuted.also {
-                        logEvent("", if (it) "Mute" else "Unmute")
-                    }
-                val speakerRouteSelected = callAudioState.route == CallAudioState.ROUTE_SPEAKER
-                isSpeakerOn =
-                    if (isSpeakerOn == speakerRouteSelected) isSpeakerOn else speakerRouteSelected.also {
-                        logEvent("", if (it) "Speaker On" else "Speaker Off")
-                    }
-                val bluetoothRouteSelected = callAudioState.route == CallAudioState.ROUTE_BLUETOOTH
-                isBluetoothOn =
-                    if (isBluetoothOn == bluetoothRouteSelected) isBluetoothOn else bluetoothRouteSelected.also {
-                        logEvent("", if (it) "Bluetooth On" else "Bluetooth Off")
-                    }
                 Log.d(
                     TAG,
-                    "handleBroadcastIntent: Audio state changed to ${
-                        CallAudioState.audioRouteToString(callAudioState.route)
-                    }"
+                    "handleBroadcastIntent: ACTION_AUDIO_STATE"
                 )
             }
 

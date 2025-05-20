@@ -97,6 +97,11 @@ class TVBroadcastReceiver(private val plugin: TwilioVoicePlugin) : BroadcastRece
         }
         Log.d(TAG, "onReceive: Received broadcast for action $action")
 
+        if(action == ACTION_AUDIO_STATE) {
+            Log.d(TAG, "avoid audio state")
+            return
+        }
+
         plugin.handleBroadcastIntent(intent)
     }
 }
