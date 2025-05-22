@@ -617,7 +617,6 @@ class TVConnectionService : ConnectionService() {
             if (activeConnections.containsKey(callSid)) {
                 activeConnections.remove(callSid)
             }
-            stopForegroundService()
             stopSelfSafe()
         }
         val onCallState: CompletionHandler<Call.State> = CompletionHandler { state ->
@@ -625,7 +624,6 @@ class TVConnectionService : ConnectionService() {
                 if (activeConnections.containsKey(callSid)) {
                     activeConnections.remove(callSid)
                 }
-                stopForegroundService()
                 stopSelfSafe()
             }
         }
@@ -675,13 +673,11 @@ class TVConnectionService : ConnectionService() {
     override fun onCreateOutgoingConnectionFailed(connectionManagerPhoneAccount: PhoneAccountHandle?, request: ConnectionRequest?) {
         super.onCreateOutgoingConnectionFailed(connectionManagerPhoneAccount, request)
         Log.d(TAG, "onCreateOutgoingConnectionFailed")
-        stopForegroundService()
     }
 
     override fun onCreateIncomingConnectionFailed(connectionManagerPhoneAccount: PhoneAccountHandle?, request: ConnectionRequest?) {
         super.onCreateIncomingConnectionFailed(connectionManagerPhoneAccount, request)
         Log.d(TAG, "onCreateIncomingConnectionFailed")
-        stopForegroundService()
     }
 
     private fun getOrCreateChannel(): NotificationChannel {
@@ -717,16 +713,5 @@ class TVConnectionService : ConnectionService() {
 
     private fun cancelNotification() {
         val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
-
-    /// Source: https://github.com/react-native-webrtc/react-native-callkeep/blob/master/android/src/main/java/io/wazo/callkeep/VoiceConnectionService.java#L352C5-L377C6
-    private fun stopForegroundService() {
-        Log.d(TAG, "[VoiceConnectionService] stopForegroundService")
-        try {
-            stopForeground(SERVICE_TYPE_MICROPHONE)
-            cancelNotification()
-        } catch (e: java.lang.Exception) {
-            Log.w(TAG, "[VoiceConnectionService] can't stop foreground service :$e")
-        }
     }
 }

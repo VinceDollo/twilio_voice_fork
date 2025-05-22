@@ -316,6 +316,7 @@ class MethodChannelTwilioVoice extends TwilioVoicePlatform {
       }
       return CallEvent.log;
     } else if (state.startsWith("LOG|PERMISSION|")) {
+      printDebug("LOG OR PERMISSION YES");
       List<String> tokens = state.split('|');
       if (kDebugMode) {
         if (tokens.length == 4) {
