@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -316,7 +317,6 @@ class MethodChannelTwilioVoice extends TwilioVoicePlatform {
       }
       return CallEvent.log;
     } else if (state.startsWith("LOG|PERMISSION|")) {
-      printDebug("LOG OR PERMISSION YES");
       List<String> tokens = state.split('|');
       if (kDebugMode) {
         if (tokens.length == 4) {
@@ -328,6 +328,12 @@ class MethodChannelTwilioVoice extends TwilioVoicePlatform {
       List<String> tokens = state.split('|');
       if (kDebugMode) {
         printDebug(tokens[1]);
+      }
+
+      if(tokens[1].contains('pushRegistry:didReceiveIncomingPushWithPayload:forType:completion')){
+        LaunchApp.openApp(
+          iosUrlScheme: 'app-1-1012960279901-ios-f670c6af5f9c903ace7cb4',
+        );
       }
 
       // https://www.twilio.com/docs/api/errors/31600
