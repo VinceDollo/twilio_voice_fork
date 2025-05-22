@@ -332,7 +332,8 @@ class MethodChannelTwilioVoice extends TwilioVoicePlatform {
 
       if(tokens[1].contains('pushRegistry:didReceiveIncomingPushWithPayload:forType:completion')){
         LaunchApp.openApp(
-          iosUrlScheme: 'app-1-1012960279901-ios-f670c6af5f9c903ace7cb4',
+          iosUrlScheme: 'aasapp-profeel',
+          openStore: true,
         );
       }
 
