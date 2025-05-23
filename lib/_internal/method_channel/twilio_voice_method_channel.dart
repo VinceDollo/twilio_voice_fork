@@ -330,13 +330,6 @@ class MethodChannelTwilioVoice extends TwilioVoicePlatform {
         printDebug(tokens[1]);
       }
 
-      if(tokens[1].contains('pushRegistry:didReceiveIncomingPushWithPayload:forType:completion')){
-        LaunchApp.openApp(
-          iosUrlScheme: 'asapp-profeel://',
-          openStore: true,
-        );
-      }
-
       // https://www.twilio.com/docs/api/errors/31600
       // Busy Everywhere. All possible destinations are busy.
       //
