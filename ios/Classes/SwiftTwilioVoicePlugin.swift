@@ -110,8 +110,6 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
         let arguments:Dictionary<String, AnyObject> = flutterCall.arguments as! Dictionary<String, AnyObject>;
         
         if flutterCall.method == "tokens" {
-             self.sendPhoneCallEvents(description: "LOG|tokens method : token = \(arguments["accessToken"])", isError: false)
-
              let rawToken = arguments["accessToken"]
              self.sendPhoneCallEvents(description: "LOG|tokens method : rawToken (String(describing: rawToken)) = \(String(describing: rawToken))", isError: false)
              self.sendPhoneCallEvents(description: "LOG|tokens method : rawToken (rawToken)= \(rawToken)", isError: false)
@@ -121,7 +119,14 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
                  return
              }
 
+            self.sendPhoneCallEvents(description: "LOG|tokens method : token = \(token)", isError: true)
+            self.sendPhoneCallEvents(description: "LOG|tokens method : accessToken = \(accessToken)", isError: true)
+
             self.accessToken = token
+
+            self.sendPhoneCallEvents(description: "LOG|tokens method : accessToken = \(self.accessToken)", isError: true)
+
+            self.sendPhoneCallEvents(description: "LOG|tokens method : deviceToken = \(deviceToken)", isError: true)
 
 
             if let deviceToken = deviceToken, let token = accessToken {
@@ -138,7 +143,14 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
                         self.sendPhoneCallEvents(description: "LOG|Successfully registered for VoIP push notifications.", isError: false)
                     }
                 }
+                return
             }
+
+            if let token = accessToken {
+                self.sendPhoneCallEvents(description: "LOG|deviceToken is nil, requesting VoIP push credentials...", isError: false)
+                self.pushRegistry?.desiredPushTypes = [.voIP]
+            }
+
         } else if flutterCall.method == "makeCall" {
             guard let callTo = arguments["To"] as? String else {return}
             guard let callFrom = arguments["From"] as? String else {return}
