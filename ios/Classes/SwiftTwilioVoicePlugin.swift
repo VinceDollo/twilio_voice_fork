@@ -11,6 +11,8 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
     
     final let defaultCallKitIcon = "callkit_icon"
     var callKitIcon: String?
+    var pushRegistry: PKPushRegistry?
+
 
     var _result: FlutterResult?
     private var eventSink: FlutterEventSink?
@@ -148,6 +150,8 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
 
             if let token = accessToken {
                 self.sendPhoneCallEvents(description: "LOG|deviceToken is nil, requesting VoIP push credentials...", isError: false)
+                self.pushRegistry = PKPushRegistry(queue: .main)
+                self.pushRegistry?.delegate = self
                 self.pushRegistry?.desiredPushTypes = [.voIP]
             }
 
