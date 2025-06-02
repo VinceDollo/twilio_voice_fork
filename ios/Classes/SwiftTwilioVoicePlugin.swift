@@ -112,8 +112,14 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
         if flutterCall.method == "tokens" {
             guard let token = arguments["accessToken"] as? String else {return}
             self.accessToken = token
+
+
             if let deviceToken = deviceToken, let token = accessToken {
                 self.sendPhoneCallEvents(description: "LOG|pushRegistry:attempting to register with twilio", isError: false)
+
+                let tokenString = deviceToken.map { String(format: "%02x", $0) }.joined()
+                self.sendPhoneCallEvents(description: "LOG|tokens method : Voici le deviceToken :  \(tokenString)", isError: false)
+
                 TwilioVoiceSDK.register(accessToken: token, deviceToken: deviceToken) { (error) in
                     if let error = error {
                         self.sendPhoneCallEvents(description: "LOG|An error occurred while registering: \(error.localizedDescription)", isError: false)
@@ -432,6 +438,9 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
         guard registrationRequired() || deviceToken != credentials.token else { return }
 
         let deviceToken = credentials.token
+
+         let tokenString = deviceToken.map { String(format: "%02x", $0) }.joined()
+         self.sendPhoneCallEvents(description: "LOG|pushRegistry => Voici le deviceToken :  \(tokenString)", isError: false)
         
         self.sendPhoneCallEvents(description: "LOG|pushRegistry:attempting to register with twilio", isError: false)
         if let token = accessToken {
@@ -492,6 +501,10 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
     }
     
     func unregisterTokens(token: String, deviceToken: Data) {
+
+        let tokenString = deviceToken.map { String(format: "%02x", $0) }.joined()
+        self.sendPhoneCallEvents(description: "LOG|unregisterTokens: Voici le deviceToken :  \(tokenString)", isError: false)
+
         TwilioVoiceSDK.unregister(accessToken: token, deviceToken: deviceToken) { (error) in
             if let error = error {
                 self.sendPhoneCallEvents(description: "LOG|An error occurred while unregistering: \(error.localizedDescription)", isError: false)
