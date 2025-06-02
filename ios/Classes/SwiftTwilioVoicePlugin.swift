@@ -112,7 +112,15 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
         if flutterCall.method == "tokens" {
              self.sendPhoneCallEvents(description: "LOG|tokens method : token = \(arguments["accessToken"])", isError: false)
 
-            guard let token = arguments["accessToken"] as? String else {return}
+             let rawToken = arguments["accessToken"]
+             self.sendPhoneCallEvents(description: "LOG|tokens method : rawToken (String(describing: rawToken)) = \(String(describing: rawToken))", isError: false)
+             self.sendPhoneCallEvents(description: "LOG|tokens method : rawToken (rawToken)= \(rawToken)", isError: false)
+
+             guard let token = rawToken as? String else {
+                 self.sendPhoneCallEvents(description: "LOG|accessToken is missing or not a String", isError: true)
+                 return
+             }
+
             self.accessToken = token
 
 
