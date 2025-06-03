@@ -112,30 +112,16 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
         let arguments:Dictionary<String, AnyObject> = flutterCall.arguments as! Dictionary<String, AnyObject>;
         
         if flutterCall.method == "tokens" {
-             let rawToken = arguments["accessToken"]
-             self.sendPhoneCallEvents(description: "LOG|tokens method : rawToken (String(describing: rawToken)) = \(String(describing: rawToken))", isError: false)
-             self.sendPhoneCallEvents(description: "LOG|tokens method : rawToken (rawToken)= \(rawToken)", isError: false)
 
-             guard let token = rawToken as? String else {
+             guard let token = arguments["accessToken"] as? String else {
                  self.sendPhoneCallEvents(description: "LOG|accessToken is missing or not a String", isError: true)
                  return
              }
 
-            self.sendPhoneCallEvents(description: "LOG|tokens method : token = \(token)", isError: true)
-            self.sendPhoneCallEvents(description: "LOG|tokens method : accessToken = \(accessToken)", isError: true)
-
             self.accessToken = token
-
-            self.sendPhoneCallEvents(description: "LOG|tokens method : accessToken = \(self.accessToken)", isError: true)
-
-            self.sendPhoneCallEvents(description: "LOG|tokens method : deviceToken = \(deviceToken)", isError: true)
-
 
             if let deviceToken = deviceToken, let token = accessToken {
                 self.sendPhoneCallEvents(description: "LOG|pushRegistry:attempting to register with twilio", isError: false)
-
-                let tokenString = deviceToken.map { String(format: "%02x", $0) }.joined()
-                self.sendPhoneCallEvents(description: "LOG|tokens method : Voici le deviceToken :  \(tokenString)", isError: false)
 
                 TwilioVoiceSDK.register(accessToken: token, deviceToken: deviceToken) { (error) in
                     if let error = error {
