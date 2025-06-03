@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
